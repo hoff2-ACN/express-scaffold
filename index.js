@@ -28,6 +28,10 @@ const app = express();
 //
 // app.listen(3000);
 
+app.get("/message", (req, res) => {
+    res.send([]);
+});
+
 let server = app.listen(3000);
 
 module.exports = { app, server };

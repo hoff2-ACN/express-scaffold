@@ -28,7 +28,7 @@ describe('system', () => {
 
     it('returns an empty message history', done => {
         request(expressApp)
-            .get('/')
+            .get('/message')
             .expect(200)
             .end((err, res) => {
                 expect(res.body).toEqual([]);
