@@ -4,16 +4,19 @@ const Chance = require('chance');
 
 describe('system', () => {
     const chance = new Chance();
-
-    let expressApp, expressServer;
+    let wsClient, expressServer;
 
     beforeEach(() => {
-        const {app, server} = require('./index');
-        expressApp = app;
+        const {server} = require('./index');
         expressServer = server;
+        wsClient = new WebSocket('ws://localhost:3000/', [], {});
     });
 
-    afterEach(function (done) {
+    afterEach(() => {
+        wsClient.close(undefined, () => {});
+    });
+
+    afterAll((done) => {
         if (expressServer) {
             expressServer.on('close', () => {
                 done();
@@ -26,23 +29,32 @@ describe('system', () => {
     });
 
     test('should accept client connection', (done) => {
-        const wsClient = new WebSocket('ws://localhost:3000/', [], {});
         wsClient.on('open', () => {
-            wsClient.close(undefined, () => {});
             done();
         });
     });
 
     test("should echo sent messages", (done) => {
         const expectedMessage = chance.string();
-        const wsClient = new WebSocket("ws://localhost:3000", [], {});
         wsClient.on("open", () => {
             wsClient.send(expectedMessage);
         });
         wsClient.on('message', (event) => {
             expect(event).toEqual(expectedMessage);
-            wsClient.close(undefined, () => {});
             done();
         });
     });
+
+    // test("should send message history upon connecting", (done) => {
+    //     const expectedHistory = [];
+    //     const wsClient = new WebSocket("ws://localhost:3000", [], {});
+    //     // wsClient.on("open", () => {
+    //     //     wsClient.send(expectedMessage);
+    //     // });
+    //     wsClient.on('message', (event) => {
+    //         expect(event).toEqual(expectedHistory);
+    //         wsClient.close(undefined, () => {});
+    //         done();
+    //     });
+    // });
 });

@@ -7,14 +7,15 @@ const expressWs = require('express-ws')(app);
 
 const aWss = expressWs.getWss('/');
 
-app.ws('/', function(ws, req) {
-  ws.on('message', function(msg) {
-    console.log(msg);
-
-    aWss.clients.forEach(function (client) {
-      client.send(msg);
+app.ws('/', function (ws, req) {
+    // ws.on('connection', (sender, req) => {
+    //     sender.send(messageHistory);
+    // });
+    ws.on('message', function (msg) {
+        aWss.clients.forEach(function (client) {
+            client.send(msg);
+        });
     });
-  });
 });
 
 const messageHistory = [];
@@ -30,4 +31,4 @@ app.post('/message', (req, res) => {
 
 let server = app.listen(3000);
 
-module.exports = { app, server };
+module.exports = {app, server};
