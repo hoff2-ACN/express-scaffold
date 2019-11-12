@@ -45,16 +45,15 @@ describe('system', () => {
         });
     });
 
-    // test("should send message history upon connecting", (done) => {
-    //     const expectedHistory = [];
-    //     const wsClient = new WebSocket("ws://localhost:3000", [], {});
-    //     // wsClient.on("open", () => {
-    //     //     wsClient.send(expectedMessage);
-    //     // });
-    //     wsClient.on('message', (event) => {
-    //         expect(event).toEqual(expectedHistory);
-    //         wsClient.close(undefined, () => {});
-    //         done();
-    //     });
-    // });
+    test("should send message history upon connecting", (done) => {
+        const expectedHistory = [];
+        // wsClient.on("open", () => {
+        //     wsClient.send(expectedMessage);
+        // });
+        wsClient.on('message', (event) => {
+            expect(event).toEqual(expectedHistory);
+            wsClient.close(undefined, () => {});
+            done();
+        });
+    });
 });
