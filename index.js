@@ -1,19 +1,11 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
+app.use(bodyParser());
+
 // var expressWs = require('express-ws')(app);
 
 // var aWss = expressWs.getWss('/');
-
-// app.use(function (req, res, next) {
-//   console.log('middleware');
-//   req.testing = 'testing';
-//   return next();
-// });
-//
-// app.get('/', function(req, res, next){
-//   console.log('get route', req.testing);
-//   res.end();
-// });
 
 // app.ws('/', function(ws, req) {
 //   ws.on('message', function(msg) {
@@ -25,11 +17,16 @@ const app = express();
 //   });
 //   console.log('socket', req.testing);
 // });
-//
-// app.listen(3000);
 
-app.get("/message", (req, res) => {
-    res.send([]);
+const messageHistory = [];
+
+app.get('/message', (req, res) => {
+    res.send(messageHistory);
+});
+
+app.post('/message', (req, res) => {
+    messageHistory.push(req.body.message);
+    res.ok();
 });
 
 let server = app.listen(3000);
