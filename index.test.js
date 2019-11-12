@@ -7,13 +7,13 @@ describe('system', () => {
 
     let expressApp, expressServer;
 
-    beforeAll(() => {
+    beforeEach(() => {
         const {app, server} = require('./index');
         expressApp = app;
         expressServer = server;
     });
 
-    afterAll(function (done) {
+    afterEach(function (done) {
         if (expressServer) {
             expressServer.on('close', () => {
                 done();

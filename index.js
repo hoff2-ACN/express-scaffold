@@ -3,20 +3,19 @@ const bodyParser = require('body-parser');
 const app = express();
 app.use(bodyParser());
 
-// var expressWs = require('express-ws')(app);
+const expressWs = require('express-ws')(app);
 
-// var aWss = expressWs.getWss('/');
+const aWss = expressWs.getWss('/');
 
-// app.ws('/', function(ws, req) {
-//   ws.on('message', function(msg) {
-//     console.log(msg);
-//
-//     aWss.clients.forEach(function (client) {
-//       client.send(msg);
-//     });
-//   });
-//   console.log('socket', req.testing);
-// });
+app.ws('/', function(ws, req) {
+  ws.on('message', function(msg) {
+    console.log(msg);
+
+    aWss.clients.forEach(function (client) {
+      client.send(msg);
+    });
+  });
+});
 
 const messageHistory = [];
 
