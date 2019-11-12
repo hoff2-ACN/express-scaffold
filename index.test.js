@@ -1,4 +1,4 @@
-// const request = require('supertest');
+const request = require('supertest');
 // const Enzyme = require('enzyme');
 
 describe('system', () => {
@@ -23,15 +23,16 @@ describe('system', () => {
     });
 
     test('runs tests', () => {
-        expect(1).toEqual(2);
+        expect(1).toEqual(1);
     });
 
-    // it('returns an empty message history', () => {
-    //     request(app)
-    //         .get('/')
-    //         .expect(200)
-    //         .end((err, res) => {
-    //             expect(res.body).to.deep.equal([]);
-    //         });
-    // });
+    it('returns an empty message history', done => {
+        request(expressApp)
+            .get('/')
+            .expect(200)
+            .end((err, res) => {
+                expect(res.body).toEqual([]);
+                done();
+            });
+    });
 });
