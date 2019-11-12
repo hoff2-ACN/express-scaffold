@@ -7,18 +7,20 @@ const expressWs = require('express-ws')(app);
 
 const aWss = expressWs.getWss('/');
 
+const messageHistory = [];
+
+aWss.on('connection', (sender, req) => {
+    sender.send(JSON.stringify(messageHistory));
+});
+
 app.ws('/', function (ws, req) {
-    // ws.on('connection', (sender, req) => {
-    //     sender.send(messageHistory);
-    // });
     ws.on('message', function (msg) {
         aWss.clients.forEach(function (client) {
+            console.dir(msg);
             client.send(msg);
         });
     });
 });
-
-const messageHistory = [];
 
 app.get('/message', (req, res) => {
     res.send(messageHistory);
