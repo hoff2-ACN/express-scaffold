@@ -19,6 +19,7 @@ app.ws('/', function (ws, req) {
             console.dir(msg);
             client.send(msg);
         });
+        messageHistory.push(msg);
     });
 });
 
