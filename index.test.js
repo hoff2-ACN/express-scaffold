@@ -1,5 +1,4 @@
 const request = require('supertest');
-// const Enzyme = require('enzyme');
 const Chance = require('chance');
 
 describe('system', () => {
