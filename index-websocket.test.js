@@ -3,7 +3,7 @@ const Chance = require('chance');
 
 describe('system', () => {
     const chance = new Chance();
-    let wsClient, expressServer;
+    let wsClient, wsClient2, expressServer;
 
     beforeEach(() => {
         const {server} = require('./index');
@@ -14,6 +14,9 @@ describe('system', () => {
     afterEach(() => {
         wsClient.close(undefined, () => {
         });
+        if (wsClient2) {
+            wsClient2.close(undefined, () => {});
+        }
     });
 
     afterAll((done) => {
@@ -42,7 +45,7 @@ describe('system', () => {
         });
 
         test("should send received message to all clients", (done) => {
-            const wsClient2 = new WebSocket('ws://localhost:3000/', [], {});
+            wsClient2 = new WebSocket('ws://localhost:3000/', [], {});
             sendMessageWhenOpen(wsClient, expectedMessage);
             expectHistoryThenMessage(wsClient2, expectedMessage, done);
         });
@@ -65,13 +68,9 @@ describe('system', () => {
     });
 
     test("should send message history upon connecting", (done) => {
-        const expectedHistory = [];
-
         wsClient.on('message', (event) => {
             const history = JSON.parse(event);
             expect(Array.isArray(history)).toEqual(true);
-            wsClient.close(undefined, () => {
-            });
             done();
         });
     });
@@ -81,10 +80,11 @@ describe('system', () => {
         wsClient.on("open", () => {
             wsClient.send(expectedMessage);
 
-            const wsClient2 = new WebSocket('ws://localhost:3000/', [], {});
+            wsClient2 = new WebSocket('ws://localhost:3000/', [], {});
             wsClient2.on('message', (event) => {
                 const history = JSON.parse(event);
                 expect(history).toContain(expectedMessage);
+                wsClient2.close(undefined, () => {});
                 done();
             });
         });
