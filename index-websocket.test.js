@@ -27,26 +27,45 @@ describe('system', () => {
         }
     });
 
-    test('should accept client connection', (done) => {
-        wsClient.on('open', () => {
-            done();
-        });
-    });
+    describe("send and receiving messages", () => {
+        let expectedMessage, responses;
 
-    test("should echo sent messages", (done) => {
-        const expectedMessage = chance.string();
-        const responses = [];
+        beforeEach(() => {
+            expectedMessage = chance.string();
+            responses = [];
+        });
 
-        wsClient.on("open", () => {
-            wsClient.send(expectedMessage);
+        test("should echo sent messages", (done) => {
+            sendMessage(wsClient, expectedMessage);
+
+            wsClient.on('message', (event) => {
+                responses.push(event);
+                if (responses.length === 2) {
+                    expect(responses).toEqual(['[]', expectedMessage]);
+                    done();
+                }
+            });
         });
-        wsClient.on('message', (event) => {
-            responses.push(event);
-            if (responses.length === 2) {
-                expect(responses).toEqual(['[]', expectedMessage]);
-                done();
-            }
+
+        test("should send received message to all clients", (done) => {
+            const wsClient2 = new WebSocket('ws://localhost:3000/', [], {});
+
+            sendMessage(wsClient, expectedMessage);
+
+            wsClient2.on('message', (event) => {
+                responses.push(event);
+                if (responses.length === 2) {
+                    expect(responses).toEqual(['[]', expectedMessage]);
+                    done();
+                }
+            });
         });
+
+        const sendMessage = (wsClient, message) => {
+            wsClient.on("open", () => {
+                wsClient.send(message);
+            });
+        }
     });
 
     test("should send message history upon connecting", (done) => {
@@ -60,3 +79,4 @@ describe('system', () => {
         });
     });
 });
+
