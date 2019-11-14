@@ -24,6 +24,9 @@ then it is stored in the history and sent to all connected users.
 
 `node index.js`
 
+Interact with it using something like Postman for the REST stuff, and
+websocat (`brew install websocat`) for the websocket endpoint.
+
 ## Testing
 
 Since so much of the functionality in Express apps is provided by the
